@@ -1,0 +1,18 @@
+name: Update Content
+
+on:
+  workflow_dispatch:
+
+jobs:
+  update-repo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "GitHub Action"
+          git config user.email "action@github.com"
+          git commit -am "Update content from Telegram" || exit 0
+          git push
