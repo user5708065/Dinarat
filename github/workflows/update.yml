@@ -1,6 +1,8 @@
 name: Update Content
 
 on:
+  schedule:
+    - cron: '*/15 * * * *'
   workflow_dispatch:
 
 jobs:
@@ -10,9 +12,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Commit and push changes
+      - name: Fetch Telegram updates and commit
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TOKEN }}
         run: |
+          curl -s "https://api.telegram.org/bot$TELEGRAM_TOKEN/getUpdates" > updates.json
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
-          git commit -am "Update content from Telegram" || exit 0
+          git add updates.json
+          git commit -m "Update content from Telegram" || exit 0
           git push
+
