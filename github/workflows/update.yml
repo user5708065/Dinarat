@@ -16,10 +16,9 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TOKEN }}
         run: |
-          curl -s "https://api.telegram.org/bot$TELEGRAM_TOKEN/getUpdates" > updates.json
+          curl -s "https://api.telegram.org/bot$TELEGRAM_TOKEN/getUpdates" | jq '.result[] | select(.message.chat.id == -1002130983218)' > updates.json
           git config user.name "GitHub Action"
           git config user.email "action@github.com"
           git add updates.json
           git commit -m "Update content from Telegram" || exit 0
           git push
-
